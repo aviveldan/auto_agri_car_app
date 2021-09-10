@@ -35,9 +35,9 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.example.auto_agri_car_flutter"
-        minSdkVersion 16
-        targetSdkVersion 30
+        applicationId "auto.agri.car"
+        minSdkVersion 23
+        targetSdkVersion 31
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
