@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "88100491998",
+    "project_id": "agri-401c0",
+    "storage_bucket": "agri-401c0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:88100491998:android:cb755cfe7c8c3ba256684f",
+        "android_client_info": {
+          "package_name": "iot.technion.agri"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "88100491998-juep2oc45klb2nvt7nofbobl9d51uk0k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBxhNmuRqmeay517uz2sH0gnl87nAeAq-k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "88100491998-juep2oc45klb2nvt7nofbobl9d51uk0k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
