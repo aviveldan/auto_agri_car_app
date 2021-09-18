@@ -21,6 +21,9 @@
 #define ULTRASONIC_ECHO_PIN A1
 #define MAX_DISTANCE 200
 
+// Water Pump
+#define PUMP_PIN A2
+
 NewPing sonar(ULTRASONIC_TRIG_PIN, ULTRASONIC_ECHO_PIN, MAX_DISTANCE);
 
 int speedvar = MIN_SPEED;
@@ -33,18 +36,23 @@ void setup() {
   pinMode(MOTOR2_PIN1, OUTPUT);
   pinMode(MOTOR2_PIN2, OUTPUT);
   pinMode(MOTORS_SPEED_PIN, OUTPUT);
+  pinMode(PUMP_PIN, OUTPUT);
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
-  delay(50);
-  moveForward();
-  
-  if(distance < 20) {
-	  moveBackward();
-	  delay(200);
-	  turnRight();
-  }
+//  delay(50);
+//  moveForward();
+//  
+//  if(distance < 20) {
+//	  moveBackward();
+//	  delay(200);
+//	  turnRight();
+//  }
+  activatePump();
+  delay(3000);
+  disablePump();
+  delay(1000);
 }
 
 // Ultrasonic Functions
@@ -130,4 +138,16 @@ void turnRight() {
   delay(TURN_TIME);
   moveStop();
   delay(100);
+}
+
+// Pump Functions
+
+void activatePump() {
+  delay(50);
+  digitalWrite(PUMP_PIN, LOW);
+}
+
+void disablePump() {
+  delay(50);
+  digitalWrite(PUMP_PIN, HIGH);
 }
