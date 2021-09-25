@@ -2,7 +2,7 @@
 // NewPing
 
 #include <NewPing.h>
-
+#include <Servo.h>
 // Global Variables and macros
 
 // Motors
@@ -15,6 +15,12 @@
 #define MAX_SPEED 190
 
 #define TURN_TIME 500
+
+//Servo for sensor and pump
+Servo servo;
+#define SERVO_PIN X
+#define SERVO_START_ANGLE 30
+#define SERVO_GROUND_ANGLE 90
 
 // Ultrasonic
 #define ULTRASONIC_TRIG_PIN A0
@@ -159,7 +165,7 @@ int moistureRead(){
     delay(1);
   }
   sensorValue = sensorValue/100.0;
-  return sensorValue;
+  return humiditySensorConverter(sensorValue);
 }
 
 int humiditySensorConverter(int sensorValue){
@@ -173,4 +179,21 @@ void poureWaterByHumidity(int humidityPercentage){
   activatePump();
   delay(delayValue);
   disablePump();
+}
+
+void putSensorInGround(){
+  delay(50);
+  servo.write(SERVO_GROUND_ANGLE);
+}
+
+void putSensorOutOfGround(){
+  delay(50);
+  servo.write(SERVO_START_ANGLE);
+}
+
+void onArivalToPlant(){
+  putSensorInGround();
+  int moisture = moistureRead();
+  poureWaterByHumidity(moisture);
+  putSensorOutOfGround();
 }
