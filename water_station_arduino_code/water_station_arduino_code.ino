@@ -2,7 +2,7 @@
 
 // Watering stuff
 #define PUMP_PIN A0
-#define WATER_DELAY_TIME 500
+#define WATER_DELAY_TIME 15000
 
 void setup() {
   disablePump();
@@ -11,7 +11,7 @@ void setup() {
 
 void loop() 
 {
-  delay(5000);
+  delay(2000);
   activatePump();
   delay(WATER_DELAY_TIME);
   disablePump();
