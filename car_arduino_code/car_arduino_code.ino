@@ -3,6 +3,7 @@
 
 #include <NewPing.h>
 #include <Servo.h>
+#include <SoftwareSerial.h>
 //#include <AccelStepper.h>
 
 // Global Variables and macros
@@ -18,7 +19,7 @@
 #define BR_MOTORA_DIR 13
 
 #define NUM_OF_STEPS_IN_METER 980
-#define NUM_OF_STEPS_IN_360_DEGREES 950
+#define NUM_OF_STEPS_IN_360_DEGREES 900
 #define CAR_SPEED 5000
 #define TURNING_SPEED 3000
 
@@ -37,18 +38,33 @@
 #define ENOUGH_MOISTURE_PERCENTAGE 70 // TODO change that to an accurate number
 #define WATER_DELAY_TIME 500
 
+// Action Enum
+#define FORWARD 0
+#define TURN_RIGHT 1
+#define TURN_LEFT 2
+#define STOP 3
+#define WATER_A_PLANT 4
+
 NewPing sonar(ULTRASONIC_TRIG_PIN, ULTRASONIC_ECHO_PIN, MAX_DISTANCE);
 Servo servo;
+SoftwareSerial ArduinoUno(0,1);
 
 //AccelStepper stepperFR(AccelStepper::DRIVER, FR_MOTORY_STEP, FR_MOTORY_DIR); // Front-Right
 //AccelStepper stepperFL(AccelStepper::DRIVER, FL_MOTORX_STEP, FL_MOTORX_DIR); // Front-Left
 //AccelStepper stepperBR(AccelStepper::DRIVER, BR_MOTORA_STEP, BR_MOTORA_DIR); // Back-Right
 //AccelStepper stepperBL(AccelStepper::DRIVER, BL_MOTORZ_STEP, BL_MOTORZ_DIR); // Back-Left
 
+// Constants
+
 int distance = 100;
+float action = -1;
+float amount = -1;
 
 void setup() {
+  Serial.begin(9600);
+  ArduinoUno.begin(9600);
   disablePump();
+  
 //  stepperFR.setMaxSpeed(100.0);
 //  stepperFR.setAcceleration(100.0);
 //  stepperFL.setMaxSpeed(100.0);
@@ -76,17 +92,70 @@ void setup() {
 
 void loop() 
 {
-  delay(5000);
-  moveForward(0.3);
-  delay(500);
-  turnRight(90);
-  moveForward(0.3);
-  delay(500);
-  moveBackward(0.3);
-  delay(500);
-  turnLeft(90);
-  delay(500);
-  moveBackward(0.3);
+  if(ArduinoUno.available()>0)
+  {
+    action = ArduinoUno.parseFloat();
+    delay(50);
+    amount = ArduinoUno.parseFloat();
+    delay(50);
+    switch(int(action))
+    {
+      case FORWARD:
+        moveForward(amount);
+        break;
+      case TURN_RIGHT:
+        turnRight(amount);
+        break;
+      case TURN_LEFT:
+        turnLeft(amount);
+        break;
+      case STOP:
+        moveStop();
+        break;
+      case WATER_A_PLANT:
+        waterAPlant();
+        break;
+    }
+    delay(100);
+  }
+  
+//  delay(2000);
+//  Serial.print("The num of steps: ");
+//  Serial.print(degree_test);
+//  Serial.print(" and the actual number of steps is: ");
+  delay(2000);
+  turnRight(90.0);
+  delay(2000);
+  turnLeft(90.0);
+//  degree_test = degree_test + 150;
+  
+//  delay(5000);
+//  moveForward(0.26);
+//  delay(50);
+//  turnLeft(90);
+//  delay(1000);
+//  turnRight(90);
+//  delay(50);
+//  moveForward(0.17);
+//  delay(50);
+//  turnRight(90);
+//  delay(1000);
+//  turnLeft(90);
+//  delay(50);
+//  moveForward(0.41);
+//  delay(50);
+//  turnLeft(90);
+//  delay(1000);
+//  turnRight(90);
+//  delay(50);
+//  moveForward(0.20);
+//  delay(50);
+//  turnRight(90);
+//  delay(1000);
+//  turnLeft(90);
+//  delay(50);
+//  moveBackward(1.04);
+//  delay(100000000000000);
 }
 
 // Ultrasonic Functions
@@ -166,12 +235,14 @@ void moveBackward(float distance_in_meters)
   delay(5);
 }
 
-int convertDegreeToSteps(float degree)
+int convertDegreeToSteps(double degree)
 {
-  return (degree*NUM_OF_STEPS_IN_360_DEGREES)/360;
+  double temp = degree / 360.0;
+  temp = temp * NUM_OF_STEPS_IN_360_DEGREES;
+  return temp;
 }
 
-void turnLeft(float degree)
+void turnLeft(double degree)
 {
   digitalWrite(FL_MOTORX_DIR, HIGH);
   digitalWrite(FR_MOTORY_DIR, HIGH);
@@ -183,7 +254,7 @@ void turnLeft(float degree)
   delay(5);
 }
 
-void turnRight(float degree)
+void turnRight(double degree)
 {  
   digitalWrite(FL_MOTORX_DIR, LOW);
   digitalWrite(FR_MOTORY_DIR, LOW);
@@ -191,6 +262,7 @@ void turnRight(float degree)
   digitalWrite(BR_MOTORA_DIR, LOW);
      
   int num_of_steps = convertDegreeToSteps(degree);
+//  Serial.println(num_of_steps);
   moveInCurrentDir(num_of_steps, true);
   delay(5);
 }
@@ -246,7 +318,7 @@ void poureWater(int delayTime){
 
 // Main Functions
 
-void WaterAPlant()
+void waterAPlant()
 {
   moveServoToGround();
   float moisture_percent = moistureReadInPercent();
