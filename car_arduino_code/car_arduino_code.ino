@@ -61,7 +61,7 @@ float action = -1;
 float amount = -1;
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
   ArduinoUno.begin(9600);
   disablePump();
   
@@ -89,11 +89,13 @@ void setup() {
   servo.attach(SERVO_PIN);
   servo.write(0);
 
-  delay(5000);
+  delay(2000);
+  Serial.print("Finished Arduino setup");
 }
 
 void loop() 
 {
+  delay(500);
   if(ArduinoUno.available()>0)
   {
     action = ArduinoUno.parseFloat();
