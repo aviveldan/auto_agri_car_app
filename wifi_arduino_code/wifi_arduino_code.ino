@@ -9,10 +9,7 @@
 
 SoftwareSerial NodeMCU(TX,RX);
 
-int num = 0;
-
 String currentServerInput = "";
-
 String outputForArduino = "";
 
 const char pathDelimiter[2] = "*";
@@ -24,44 +21,36 @@ void setup()
   NodeMCU.begin(9600);
   
   wifiConnect();
-   Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
-  if(Firebase.failed()){
-    Serial.println(Firebase.error());
-  }
-  delay(10);
- // Serial.println("Setup completed");
-  
+  Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
+//  if(Firebase.failed())
+//  {
+//    Serial.println(Firebase.error());
+//  }
+  delay(10);  
 }
 
 void loop()
-{  
-  num++;
+{
   delay(2000);
- // Serial.println("Wifi Loop Refresh");
-  delay(500);
-  Firebase.setFloat("number", num); //counter for sanity check
-  delay(500);
+//  Serial.println("Wifi Loop Refresh");
+//  Firebase.setFloat("number", num); //counter for sanity check
   String path = Firebase.getString("Path");
-  if(path == currentServerInput) return;
+  if(path == currentServerInput)
+  {
+    return;
+  }
   currentServerInput = path;
 
-  
   parseAndSendCommands(path);
   
-  
-  Firebase.setString("Rec", path);
-  delay(500);
- 
-  
-  if(WiFi.status() != WL_CONNECTED)
-  {
-    wifiConnect();
-  }
+//  Firebase.setString("Rec", path);
+//  delay(500);
+
   delay(10);
 }
 
-void parseAndSendCommands(String path){
-  
+void parseAndSendCommands(String path)
+{
   char cstr[path.length() + 1];
   strcpy(cstr, path.c_str());
   char* token;
@@ -70,14 +59,13 @@ void parseAndSendCommands(String path){
   float faction;
   float famount;
   
-  
   action = strtok(cstr, actionDelimiter);
   amount = strtok(NULL, actionDelimiter);
   faction = atof(action);
   famount = atof(amount);
   
-  //testing purposes whileeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
-  while( action != NULL  && amount != NULL) {
+  while(action != NULL && amount != NULL)
+  {
     sendActionToArduino(faction, famount);
     action = strtok(NULL, actionDelimiter);
     if(action == NULL) return;
@@ -86,7 +74,7 @@ void parseAndSendCommands(String path){
     faction = atof(action);
     famount = atof(amount);
     delay(50);
-   }
+  }
 }
 
 void sendActionToArduino(float faction, float famount){
@@ -102,14 +90,15 @@ void sendActionToArduino(float faction, float famount){
 
 void wifiConnect()
 {
-  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);             // Connect to the network
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD); // Connect to the network
   //Serial.print("Connecting to ");
   //Serial.print(WIFI_SSID); Serial.println(" ...");
 
-  int teller = 0;
+//  int teller = 0;
   while (WiFi.status() != WL_CONNECTED)
-  {                                       // Wait for the Wi-Fi to connect
-    delay(1000);
+  {
+    // Wait for the Wi-Fi to connect
+    delay(500);
    // Serial.print(++teller); Serial.print(' ');
   }
 

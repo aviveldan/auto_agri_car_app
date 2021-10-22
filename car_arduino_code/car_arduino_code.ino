@@ -88,6 +88,8 @@ void setup() {
   pinMode(PUMP_PIN, OUTPUT);
   servo.attach(SERVO_PIN);
   servo.write(0);
+
+  delay(5000);
 }
 
 void loop() 
@@ -98,35 +100,46 @@ void loop()
     delay(50);
     amount = ArduinoUno.parseFloat();
     delay(50);
+    
     switch(int(action))
     {
       case FORWARD:
-        moveForward(amount);
+        Serial.print("Forward: ");
+        Serial.println(amount);
+//        moveForward(amount);
         break;
       case TURN_RIGHT:
-        turnRight(amount);
+        Serial.print("Right: ");
+        Serial.println(amount);
+//        turnRight(amount);
         break;
       case TURN_LEFT:
-        turnLeft(amount);
+        Serial.print("Left: ");
+        Serial.println(amount);
+//        turnLeft(amount);
         break;
       case STOP:
-        moveStop();
+        Serial.print("Stop: ");
+        Serial.println(amount);
+//        moveStop();
         break;
       case WATER_A_PLANT:
-        waterAPlant();
+        Serial.print("Water: ");
+        Serial.println(amount);
+//        waterAPlant();
         break;
     }
-    delay(100);
   }
+  delay(50);
   
 //  delay(2000);
 //  Serial.print("The num of steps: ");
 //  Serial.print(degree_test);
 //  Serial.print(" and the actual number of steps is: ");
-  delay(2000);
-  turnRight(90.0);
-  delay(2000);
-  turnLeft(90.0);
+//  delay(2000);
+//  turnRight(90.0);
+//  delay(2000);
+//  turnLeft(90.0);
 //  degree_test = degree_test + 150;
   
 //  delay(5000);
