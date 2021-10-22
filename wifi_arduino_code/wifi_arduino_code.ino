@@ -11,7 +11,7 @@
 
 String outputForArduino = "";
 const char actionDelimiter[2] = " ";
-String Status = "";
+String Status = "shlukkkkk";
 
 void setup()
 {
@@ -21,17 +21,26 @@ void setup()
   wifiConnect();
   delay(1000);
   Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
+  if (Firebase.failed()) {
+     Serial.println(Firebase.error());  
+     return;
+ }
   delay(3000);
 }
 
 void loop()
 {  
+  //Serial.println("loop start");
   delay(2000);
   Status = Firebase.getString("Status");
   while(Status != READY_STATUS_STRING){
+    //Serial.println("while start");
     delay(2000);
     Status = Firebase.getString("Status");
+    //Serial.println(Status);
+    delay(50);
   }
+  
   Firebase.setString("Status", "idle");
   delay(50);
   String path = Firebase.getString("Path");
