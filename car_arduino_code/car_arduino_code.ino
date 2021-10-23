@@ -4,7 +4,6 @@
 #include <NewPing.h>
 #include <Servo.h>
 #include <SoftwareSerial.h>
-//#include <AccelStepper.h>
 
 // Global Variables and macros
 
@@ -18,8 +17,8 @@
 #define BR_MOTORA_STEP 12
 #define BR_MOTORA_DIR 13
 
-#define NUM_OF_STEPS_IN_METER 980
-#define NUM_OF_STEPS_IN_360_DEGREES 900
+#define NUM_OF_STEPS_IN_METER 1100
+#define NUM_OF_STEPS_IN_360_DEGREES 825
 #define CAR_SPEED 5000
 #define TURNING_SPEED 3000
 
@@ -31,12 +30,15 @@
 // Watering stuff
 #define PUMP_PIN A2 // Cycle Start/Resume - YELLOW
 #define SERVO_PIN A3 // Coolant Enable - ORANGE
-#define MOUISTURE_PIN A4 // Reserved - BLUE
+#define MOUISTURE_PIN A4 // SDA - BLUE
 
 #define SERVO_MAX_DEGREE 70
-#define SERVO_WATERING_DEGREE 40
-#define ENOUGH_MOISTURE_PERCENTAGE 70 // TODO change that to an accurate number
-#define WATER_DELAY_TIME 500
+#define SERVO_WATERING_DEGREE 120
+#define ENOUGH_MOISTURE_PERCENTAGE 70
+#define BIG_WATER_DELAY_TIME 400
+#define MEDIUM_WATER_DELAY_TIME 250
+#define SMALL_WATER_DELAY_TIME 150
+#define AMOUNT_OF_REFILL 9500 // From 11000
 
 // Action Enum
 #define FORWARD 0
@@ -44,35 +46,24 @@
 #define TURN_LEFT 2
 #define STOP 3
 #define WATER_A_PLANT 4
+#define REFILL 5
 
 NewPing sonar(ULTRASONIC_TRIG_PIN, ULTRASONIC_ECHO_PIN, MAX_DISTANCE);
 Servo servo;
 SoftwareSerial ArduinoUno(0,1);
-
-//AccelStepper stepperFR(AccelStepper::DRIVER, FR_MOTORY_STEP, FR_MOTORY_DIR); // Front-Right
-//AccelStepper stepperFL(AccelStepper::DRIVER, FL_MOTORX_STEP, FL_MOTORX_DIR); // Front-Left
-//AccelStepper stepperBR(AccelStepper::DRIVER, BR_MOTORA_STEP, BR_MOTORA_DIR); // Back-Right
-//AccelStepper stepperBL(AccelStepper::DRIVER, BL_MOTORZ_STEP, BL_MOTORZ_DIR); // Back-Left
 
 // Constants
 
 int distance = 100;
 float action = -1;
 float amount = -1;
+double amount_of_water = 0;
 
 void setup() {
-  Serial.begin(115200);
+  delay(50);
+  Serial.begin(9600);
   ArduinoUno.begin(9600);
-  disablePump();
-  
-//  stepperFR.setMaxSpeed(100.0);
-//  stepperFR.setAcceleration(100.0);
-//  stepperFL.setMaxSpeed(100.0);
-//  stepperFL.setAcceleration(100.0);
-//  stepperBR.setMaxSpeed(100.0);
-//  stepperBR.setAcceleration(100.0);
-//  stepperBL.setMaxSpeed(100.0);
-//  stepperBL.setAcceleration(100.0);
+  digitalWrite(PUMP_PIN, HIGH); // disablePump();
   
   pinMode(FL_MOTORX_STEP, OUTPUT);
   pinMode(FL_MOTORX_DIR, OUTPUT);
@@ -90,12 +81,15 @@ void setup() {
   servo.write(0);
 
   delay(2000);
-  Serial.print("Finished Arduino setup");
 }
 
 void loop() 
 {
-  delay(500);
+  if(amount_of_water <= 0)
+  {
+    sendNeedRefill(); // Need to be implemented
+    delay(5000);
+  }
   if(ArduinoUno.available()>0)
   {
     action = ArduinoUno.parseFloat();
@@ -106,71 +100,92 @@ void loop()
     switch(int(action))
     {
       case FORWARD:
-        Serial.print("Forward: ");
-        Serial.println(amount);
-//        moveForward(amount);
+//        Serial.print("Forward: ");
+//        Serial.println(amount);
+        moveForward(amount);
         break;
       case TURN_RIGHT:
-        Serial.print("Right: ");
-        Serial.println(amount);
-//        turnRight(amount);
+//        Serial.print("Right: ");
+//        Serial.println(amount);
+        turnRight(amount);
         break;
       case TURN_LEFT:
-        Serial.print("Left: ");
-        Serial.println(amount);
-//        turnLeft(amount);
+//        Serial.print("Left: ");
+//        Serial.println(amount);
+        turnLeft(amount);
         break;
       case STOP:
-        Serial.print("Stop: ");
-        Serial.println(amount);
-//        moveStop();
+//        Serial.print("Stop: ");
+//        Serial.println(amount);
+        moveStop();
         break;
       case WATER_A_PLANT:
-        Serial.print("Water: ");
-        Serial.println(amount);
-//        waterAPlant();
+//        Serial.print("Water: ");
+//        Serial.println(amount);
+        waterAPlant();
+        break;
+      case REFILL:
+        amount_of_water = AMOUNT_OF_REFILL;
         break;
     }
   }
   delay(50);
-  
-//  delay(2000);
-//  Serial.print("The num of steps: ");
-//  Serial.print(degree_test);
-//  Serial.print(" and the actual number of steps is: ");
-//  delay(2000);
-//  turnRight(90.0);
-//  delay(2000);
-//  turnLeft(90.0);
-//  degree_test = degree_test + 150;
-  
-//  delay(5000);
-//  moveForward(0.26);
+
+//  // First Line
+//  delay(3000);
+//  moveForward(50);
 //  delay(50);
-//  turnLeft(90);
-//  delay(1000);
-//  turnRight(90);
+////  turnRight(90);
+////  delay(50);
+//  waterAPlant();
 //  delay(50);
-//  moveForward(0.17);
-//  delay(50);
-//  turnRight(90);
-//  delay(1000);
+////  turnLeft(90);
+////  delay(50);
+////  moveForward(25);
+////  delay(50);
 //  turnLeft(90);
 //  delay(50);
-//  moveForward(0.41);
+//  // Second Line
+//  moveForward(50);
 //  delay(50);
+////  turnRight(90);
+////  delay(50);
+//  waterAPlant();
+//  delay(50);
+////  turnLeft(90);
+////  delay(50);
+////  moveForward(25);
+////  delay(50);
 //  turnLeft(90);
-//  delay(1000);
-//  turnRight(90);
 //  delay(50);
-//  moveForward(0.20);
+//  // Third Line
+//  moveForward(50);
 //  delay(50);
-//  turnRight(90);
-//  delay(1000);
+////  turnRight(90);
+////  delay(50);
+//  waterAPlant();
+//  delay(50);
+////  turnLeft(90);
+////  delay(50);
+////  moveForward(25);
+////  delay(50);
 //  turnLeft(90);
 //  delay(50);
-//  moveBackward(1.04);
-//  delay(100000000000000);
+//  // Fourth Line
+//  moveForward(50);
+//  delay(50);
+////  turnRight(90);
+////  delay(50);
+//  waterAPlant();
+//  delay(50);
+////  turnLeft(90);
+////  delay(50);
+////  moveForward(25);
+////  delay(50);
+//  turnLeft(90);
+//  delay(50);
+
+//  delay(10000000);
 }
 
 // Ultrasonic Functions
@@ -187,9 +202,10 @@ int readDistance() {
 
 // Motors Functions
 
-int convertMetersToSteps(float meters)
+int convertCMetersToSteps(double cmeters)
 {
-  return meters*NUM_OF_STEPS_IN_METER;
+  double temp = (cmeters/100)*NUM_OF_STEPS_IN_METER;
+  return temp;
 }
 
 void moveStop() 
@@ -198,7 +214,7 @@ void moveStop()
   digitalWrite(FR_MOTORY_STEP, LOW);
   digitalWrite(BL_MOTORZ_STEP, LOW);
   digitalWrite(BR_MOTORA_STEP, LOW);
-} 
+}
 
 void moveInCurrentDir(int distance_in_steps, bool is_turning)
 {
@@ -226,26 +242,26 @@ void moveInCurrentDir(int distance_in_steps, bool is_turning)
   }
 }
 
-void moveForward(float distance_in_meters) 
+void moveForward(float distance_in_cmeters) 
 {
   digitalWrite(FL_MOTORX_DIR, LOW);
   digitalWrite(FR_MOTORY_DIR, HIGH);
   digitalWrite(BL_MOTORZ_DIR, LOW);
   digitalWrite(BR_MOTORA_DIR, HIGH);
   
-  int distance_in_steps = convertMetersToSteps(distance_in_meters);
+  int distance_in_steps = convertCMetersToSteps(distance_in_cmeters);
   moveInCurrentDir(distance_in_steps, false);
   delay(5);
 }
 
-void moveBackward(float distance_in_meters) 
+void moveBackward(float distance_in_cmeters) 
 {
   digitalWrite(FL_MOTORX_DIR, HIGH);
   digitalWrite(FR_MOTORY_DIR, LOW);
   digitalWrite(BL_MOTORZ_DIR, HIGH);
   digitalWrite(BR_MOTORA_DIR, LOW);
 
-  int distance_in_steps = convertMetersToSteps(distance_in_meters);
+  int distance_in_steps = convertCMetersToSteps(distance_in_cmeters);
   moveInCurrentDir(distance_in_steps, false);
   delay(5);
 }
@@ -287,13 +303,13 @@ void turnRight(double degree)
 void moveServoToGround()
 {
   servo.write(SERVO_WATERING_DEGREE);
-  delay(1000);
+  delay(500);
 }
 
 void moveServoUp()
 {
   servo.write(0);
-  delay(1000);
+  delay(500);
 }
 
 // Pump Functions
@@ -308,7 +324,8 @@ void disablePump() {
   digitalWrite(PUMP_PIN, HIGH);
 }
 
-int moistureToPercent(int sensorValue){
+int moistureToPercent(int sensorValue)
+{
   int percentage = map(sensorValue, 1023, 165, 0, 100);
   delay(50);
   return percentage;
@@ -316,13 +333,13 @@ int moistureToPercent(int sensorValue){
 
 int moistureReadInPercent()
 {
-  int moisture_value = 0;
-  for(int i=0; i <= 100; ++i){
-    moisture_value += analogRead(MOUISTURE_PIN);
-    delay(1);
-  }
-  moisture_value = moisture_value/100.0;
-  return moistureToPercent(moisture_value);
+//  int moisture_value = 0;
+//  for(int i=0; i <= 100; ++i){
+//    moisture_value += analogRead(MOUISTURE_PIN);
+//    delay(1);
+//  }
+//  moisture_value = moisture_value/100.0;
+  return moistureToPercent(analogRead(MOUISTURE_PIN));
 }
 
 void poureWater(int delayTime){
@@ -337,10 +354,33 @@ void waterAPlant()
 {
   moveServoToGround();
   float moisture_percent = moistureReadInPercent();
-  while(moisture_percent < ENOUGH_MOISTURE_PERCENTAGE)
+  if(moisture_percent < (ENOUGH_MOISTURE_PERCENTAGE/3))
   {
-    poureWater(WATER_DELAY_TIME);
-    moisture_percent = moistureReadInPercent();
+    activatePump();
+    delay(BIG_WATER_DELAY_TIME);
+    disablePump();
+    amount_of_water = amount_of_water - BIG_WATER_DELAY_TIME;
   }
+  else
+  {
+    if(moisture_percent < (ENOUGH_MOISTURE_PERCENTAGE/2))
+    {
+      activatePump();
+      delay(MEDIUM_WATER_DELAY_TIME);
+      disablePump();
+      amount_of_water = amount_of_water - MEDIUM_WATER_DELAY_TIME;
+    }
+    else
+    {
+      if(moisture_percent < ENOUGH_MOISTURE_PERCENTAGE)
+      {
+        activatePump();
+        delay(SMALL_WATER_DELAY_TIME);
+        disablePump();
+        amount_of_water = amount_of_water - SMALL_WATER_DELAY_TIME;
+      }
+    }
+  }
+  delay(300);
   moveServoUp();
 }

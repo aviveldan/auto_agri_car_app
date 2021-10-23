@@ -1,20 +1,51 @@
-// Global Variables and macros
+#include <SoftwareSerial.h>
+
+SoftwareSerial ArduinoUno(0,1);
 
 // Watering stuff
 #define PUMP_PIN A0
-#define WATER_DELAY_TIME 15000
+#define WATER_DELAY_TIME 45000
+
+float need_water = 0;
 
 void setup() {
-  disablePump();
+  delay(50);
+  Serial.begin(9600);
+  ArduinoUno.begin(9600);
+  digitalWrite(PUMP_PIN, HIGH); // disablePump();
   pinMode(PUMP_PIN, OUTPUT);
+
+  delay(2000);
 }
 
 void loop() 
 {
+  if(ArduinoUno.available()>0)
+  {
+    need_water = ArduinoUno.parseFloat();
+    delay(50);
+    if(need_water == 1)
+    {
+      activatePump();
+      delay(WATER_DELAY_TIME);
+      disablePump();
+      need_water = 0;
+      sendFireBase(need_water);
+      delay(5000);
+    }
+  }
   delay(2000);
-  activatePump();
-  delay(WATER_DELAY_TIME);
-  disablePump();
+//  activatePump();
+//  delay(WATER_DELAY_TIME);
+//  disablePump();
+}
+
+void sendFireBase(float need_water)
+{
+  Serial.print(need_water);
+  delay(50);
+  Serial.println("\n");
+  delay(50);
 }
 
 // Pump Functions
