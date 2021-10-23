@@ -13,11 +13,11 @@ String outputForArduino = "";
 const char actionDelimiter[2] = " ";
 String Status = "shlukkkkk";
 
+
 void setup()
 {
-  delay(4000);
+  delay(1000);
   Serial.begin(9600);
-  
   wifiConnect();
   delay(1000);
   Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
@@ -25,30 +25,25 @@ void setup()
      Serial.println(Firebase.error());  
      return;
  }
-  delay(3000);
+  delay(1000);
 }
 
 void loop()
 {  
-  //Serial.println("loop start");
   delay(2000);
   Status = Firebase.getString("Status");
   while(Status != READY_STATUS_STRING){
-    //Serial.println("while start");
     delay(2000);
     Status = Firebase.getString("Status");
-    //Serial.println(Status);
     delay(50);
   }
   
   Firebase.setString("Status", "idle");
   delay(50);
-  String path = Firebase.getString("Path");
+  String path = Firebase.getString("Path");  
   delay(50);
-  Firebase.setString("WifiAck", "Received new path");
-  
   parseAndSendCommands(path);
-  delay(500);
+  delay(50); 
 }
 
 void parseAndSendCommands(String path){
@@ -81,13 +76,13 @@ void parseAndSendCommands(String path){
 
 void sendActionToArduino(float faction, float famount){
   Serial.print(faction);
-  delay(50);
+  delay(10);
   Serial.println("\n");
-  delay(50);
+  delay(10);
   Serial.print(famount);
-  delay(50);
+  delay(10);
   Serial.println("\n");
-  delay(50);
+  delay(10);
 }
 
 void wifiConnect()
