@@ -208,6 +208,9 @@ int convertCMetersToSteps(double cmeters)
   return temp;
 }
 
+void sendNeedRefill(){
+  ArduinoUno.println("refill");
+}
 void moveStop() 
 {
   digitalWrite(FL_MOTORX_STEP, LOW);
