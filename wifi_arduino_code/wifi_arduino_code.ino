@@ -28,9 +28,19 @@ void setup()
   delay(1000);
 }
 
+bool needRefill = false;
 void loop()
 {  
   delay(2000);
+  //case arduino send shit to wifi if we need to refill
+  if(Serial.available()>0 && !needRefill){
+    String s = Serial.readString();
+    if(s == "refill"){
+      Firebase.setBool("NeedRefill", true);
+      needRefill = true;
+    }
+  }
+  
   Status = Firebase.getString("Status");
   while(Status != READY_STATUS_STRING){
     delay(2000);
