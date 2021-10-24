@@ -7,12 +7,7 @@
 #define FIREBASE_HOST "car-project-49490-default-rtdb.firebaseio.com"
 #define FIREBASE_AUTH "ieGIVK3SFXpOGp3OYNsZyNPdZg1YAcjvQTFsWIqB"
 
-#define READY_STATUS_STRING "ready"
-
-String outputForArduino = "";
-const char actionDelimiter[2] = " ";
-String Status = "shlukkkkk";
-
+bool Status = false;
 
 void setup()
 {
@@ -28,16 +23,16 @@ void setup()
   delay(1000);
 }
 
-bool carInPlace = false;
 void loop()
 {  
-  Status = Firebase.getString("CarInPlace");
+  Status = Firebase.getBool("NeedRefill");
   while(!Status){
-    delay(2000);
-    Status = Firebase.getString("Status");
+    delay(500);
+    Status = Firebase.getBool("NeedRefill");
     delay(50);
   }
   updateStationToRefill();
+  Firebase.setBool("NeedRefill", false);
 }
 
 void updateStationToRefill(){
