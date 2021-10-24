@@ -85,12 +85,12 @@ void setup() {
 
 void loop() 
 {
-  if(amount_of_water <= 0)
-  {
-    delay(5000);
-    sendNeedRefill();
-    delay(3000);
-  }
+//  if(amount_of_water <= 0)
+//  {
+//    delay(5000);
+//    sendNeedRefill();
+//    delay(3000);
+//  }
   if(ArduinoUno.available()>0)
   {
     action = ArduinoUno.parseFloat();
@@ -127,6 +127,7 @@ void loop()
         break;
       case REFILL:
         amount_of_water = AMOUNT_OF_REFILL;
+        delay(45000);
         break;
     }
   }

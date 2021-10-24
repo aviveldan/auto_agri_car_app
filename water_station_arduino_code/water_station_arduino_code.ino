@@ -20,9 +20,9 @@ void loop()
 {
   if(ArduinoUno.available()>0)
   {
-    String s = ArduinoUno.readString();
+    float f = ArduinoUno.parseFloat();
     delay(50);
-    if(s == "refill")
+    if(f == 1)
     {
       activatePump();
       delay(WATER_DELAY_TIME);
