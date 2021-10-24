@@ -87,8 +87,9 @@ void loop()
 {
   if(amount_of_water <= 0)
   {
-    sendNeedRefill(); // Need to be implemented
     delay(5000);
+    sendNeedRefill();
+    delay(3000);
   }
   if(ArduinoUno.available()>0)
   {
@@ -208,9 +209,6 @@ int convertCMetersToSteps(double cmeters)
   return temp;
 }
 
-void sendNeedRefill(){
-  ArduinoUno.println("refill");
-}
 void moveStop() 
 {
   digitalWrite(FL_MOTORX_STEP, LOW);
@@ -349,6 +347,11 @@ void poureWater(int delayTime){
   activatePump();
   delay(delayTime);
   disablePump();
+}
+
+void sendNeedRefill()
+{
+  ArduinoUno.println("refill");
 }
 
 // Main Functions
