@@ -27,6 +27,7 @@ void setup()
  }
   delay(1000);
   Firebase.setString("Status", "idle");
+  Firebase.setString("WifiAck", "Setup finished");
 }
 
 
