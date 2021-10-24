@@ -8,7 +8,7 @@ SoftwareSerial ArduinoUno(0,1);
 
 void setup() {
   delay(50);
-  Serial.begin(9600);
+  Serial.begin(115200);
   ArduinoUno.begin(9600);
   digitalWrite(PUMP_PIN, HIGH); // disablePump();
   pinMode(PUMP_PIN, OUTPUT);
