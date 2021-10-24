@@ -54,7 +54,7 @@ void loop()
   Firebase.setString("Status", "idle");
   delay(50);
   String path = Firebase.getString("Path");
-  String path = Firebase.setString("WifiAck", path);
+  Firebase.setString("WifiAck", path);
   delay(50);
   parseAndSendCommands(path);
   delay(50); 
