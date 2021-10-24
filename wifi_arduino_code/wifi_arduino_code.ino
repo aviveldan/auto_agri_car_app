@@ -26,6 +26,7 @@ void setup()
      return;
  }
   delay(1000);
+  Firebase.setString("Status", "idle");
 }
 
 
