@@ -6,8 +6,6 @@ SoftwareSerial ArduinoUno(0,1);
 #define PUMP_PIN A0
 #define WATER_DELAY_TIME 45000
 
-float need_water = 0;
-
 void setup() {
   delay(50);
   Serial.begin(9600);
@@ -29,20 +27,12 @@ void loop()
       activatePump();
       delay(WATER_DELAY_TIME);
       disablePump();
-      need_water = 0;
       delay(5000);
     }
   }
   delay(2000);
 }
 
-void sendFireBase(float need_water)
-{
-  Serial.print(need_water);
-  delay(50);
-  Serial.println("\n");
-  delay(50);
-}
 
 // Pump Functions
 
