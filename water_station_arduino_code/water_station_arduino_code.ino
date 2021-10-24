@@ -22,22 +22,18 @@ void loop()
 {
   if(ArduinoUno.available()>0)
   {
-    need_water = ArduinoUno.parseFloat();
+    String s = ArduinoUno.readString();
     delay(50);
-    if(need_water == 1)
+    if(s == "refill")
     {
       activatePump();
       delay(WATER_DELAY_TIME);
       disablePump();
       need_water = 0;
-      sendFireBase(need_water);
       delay(5000);
     }
   }
   delay(2000);
-//  activatePump();
-//  delay(WATER_DELAY_TIME);
-//  disablePump();
 }
 
 void sendFireBase(float need_water)
