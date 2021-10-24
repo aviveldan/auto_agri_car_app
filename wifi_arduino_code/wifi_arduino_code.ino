@@ -28,16 +28,17 @@ void setup()
   delay(1000);
 }
 
-bool needRefill = false;
+
 void loop()
 {  
   delay(2000);
   //case arduino send shit to wifi if we need to refill
-  if(Serial.available()>0 && !needRefill){
+  if(Serial.available()>0){
     String s = Serial.readString();
     if(s == "refill"){
+      gotoWaterStation();
       Firebase.setBool("NeedRefill", true);
-      needRefill = true;
+      sendActionToArduino(5, 0);
     }
   }
   
@@ -54,6 +55,11 @@ void loop()
   delay(50);
   parseAndSendCommands(path);
   delay(50); 
+}
+
+
+void gotoWaterStation(){
+//to implement  
 }
 
 void parseAndSendCommands(String path){
