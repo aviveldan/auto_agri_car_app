@@ -3,7 +3,6 @@
 
 #include <NewPing.h>
 #include <Servo.h>
-#include <SoftwareSerial.h>
 
 // Global Variables and macros
 
@@ -50,7 +49,6 @@
 
 NewPing sonar(ULTRASONIC_TRIG_PIN, ULTRASONIC_ECHO_PIN, MAX_DISTANCE);
 Servo servo;
-SoftwareSerial ArduinoUno(0,1);
 
 // Constants
 
@@ -62,7 +60,6 @@ double amount_of_water = 0;
 void setup() {
   delay(50);
   Serial.begin(9600);
-  ArduinoUno.begin(9600);
   digitalWrite(PUMP_PIN, HIGH); // disablePump();
   
   pinMode(FL_MOTORX_STEP, OUTPUT);
@@ -80,22 +77,18 @@ void setup() {
   servo.attach(SERVO_PIN);
   servo.write(0);
 
-  delay(2000);
+  delay(5000);
+  sendNeedRefill();
+  delay(3000);
 }
 
-void loop() 
+void loop()
 {
-//  if(amount_of_water <= 0)
-//  {
-//    delay(5000);
-//    sendNeedRefill();
-//    delay(3000);
-//  }
-  if(ArduinoUno.available()>0)
+  if(Serial.available()>0)
   {
-    action = ArduinoUno.parseFloat();
+    action = Serial.parseFloat();
     delay(50);
-    amount = ArduinoUno.parseFloat();
+    amount = Serial.parseFloat();
     delay(50);
     
     switch(int(action))
@@ -129,6 +122,18 @@ void loop()
         amount_of_water = AMOUNT_OF_REFILL;
         delay(45000);
         break;
+    }
+    if(amount_of_water <= 0)
+    { 
+      delay(5000);
+      sendNeedRefill();
+      delay(3000);
+    }
+    else
+    {
+      Serial.print(0);
+      delay(10);
+      Serial.println("\n");
     }
   }
   delay(50);
@@ -352,7 +357,8 @@ void poureWater(int delayTime){
 
 void sendNeedRefill()
 {
-  ArduinoUno.println("refill");
+  Serial.print(1);
+  Serial.println("\n");
 }
 
 // Main Functions
