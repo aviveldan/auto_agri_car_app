@@ -1,5 +1,5 @@
 #include <ESP8266WiFi.h>
-//#include <FirebaseArduino.h>
+#include <FirebaseArduino.h>
 
 #define WIFI_SSID "AmitZr"
 #define WIFI_PASSWORD "tpmg5834"
@@ -12,12 +12,11 @@ String outputForArduino = "";
 const char actionDelimiter[2] = " ";
 String Status = "shlukkkkk";
 
-char* token;
-char* action;
-char* amount;
-float faction;
-float famount;
+#define REFILL_ACK 1
+
 String path;
+
+bool first_iteration = true;
 
 void setup()
 {
@@ -27,43 +26,61 @@ void setup()
   delay(1000);
   fireBaseConnect();
   delay(50);
-  char* cstr[path.length() + 1];
-  strcpy(cstr, path.c_str());
 
-  action = strtok(cstr, actionDelimiter);
-  amount = strtok(NULL, actionDelimiter);
-  faction = atof(action);
-  famount = atof(amount);
+  // path = "0 111 1 90 2 90 0 222 1 90 2 90 0 333 1 90 2 90 0 444 1 90 2 90 0 555 1 90 2 90 0 666 1 90 2 90 0 777 1 90 2 90 0 888 1 90 2 90 0 999 1 90 2 90";
 }
 
 
 void loop()
-{  
-// Can be refill or ack
-  if(action != NULL  && amount != NULL)
+{
+  if(first_iteration==true)
   {
-    sendActionToArduino(faction, famount);
-    while(Serial.available() <= 0)
-    {
-      delay(500);
-    }
-    float f = Serial.parseFloat();
-    if(f == 1)
-    {
-      gotoWaterStation();
-      Firebase.setBool("NeedRefill", true);
-      sendActionToArduino(5, 0);
-      goBackToPlace();
-    }
-    action = strtok(NULL, actionDelimiter);
-    if(action == NULL) return;
+    char cstr[path.length() + 1];
+    strcpy(cstr, path.c_str());
+    char* token;
+    char* action;
+    char* amount;
+    float faction;
+    float famount;
+
+    action = strtok(cstr, actionDelimiter);
     amount = strtok(NULL, actionDelimiter);
-    if(amount == NULL) return;
     faction = atof(action);
     famount = atof(amount);
-    delay(50);
+
+    while(action != NULL  && amount != NULL)
+    {
+      sendActionToArduino(faction, famount);
+      while(Serial.available() <= 0)
+      {
+        delay(500);
+      }
+      float f = Serial.parseFloat();
+      if(f == REFILL_ACK)
+      {
+//        gotoWaterStation();
+//        Firebase.setBool("NeedRefill", true);
+//        sendActionToArduino(5, 0);
+//        goBackToPlace();
+      }
+      action = strtok(NULL, actionDelimiter);
+      if(action == NULL){
+        first_iteration = false;
+        return;
+      }
+      amount = strtok(NULL, actionDelimiter);
+      if(amount == NULL){
+        first_iteration = false;
+        return;
+      }
+      faction = atof(action);
+      famount = atof(amount);
+      delay(50);
+    }
+    first_iteration = false;
   }
-  delay(50); 
+  
+  delay(5000); 
 }
 
 
