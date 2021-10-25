@@ -55,7 +55,7 @@ Servo servo;
 int distance = 100;
 float action = -1;
 float amount = -1;
-double amount_of_water = 0;
+double amount_of_water = 10;
 
 void setup() {
   delay(50);
@@ -77,9 +77,9 @@ void setup() {
   servo.attach(SERVO_PIN);
   servo.write(0);
 
-  delay(5000);
-  sendNeedRefill();
-  delay(3000);
+//  delay(5000);
+//  sendNeedRefill();
+//  delay(3000);
 }
 
 void loop()
@@ -358,6 +358,7 @@ void poureWater(int delayTime){
 void sendNeedRefill()
 {
   Serial.print(1);
+  delay(10);
   Serial.println("\n");
 }
 
