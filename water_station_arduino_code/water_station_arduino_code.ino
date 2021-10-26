@@ -18,7 +18,7 @@ void loop()
   {
     float f = Serial.parseFloat();
     delay(50);
-    if(f == 1)
+    if(f == 111)
     {
       activatePump();
       delay(WATER_DELAY_TIME);

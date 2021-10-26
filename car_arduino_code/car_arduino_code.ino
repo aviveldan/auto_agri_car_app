@@ -55,7 +55,7 @@ Servo servo;
 int distance = 100;
 float action = -1;
 float amount = -1;
-double amount_of_water = 00;
+double amount_of_water = 1;
 
 void setup() {
   delay(50);

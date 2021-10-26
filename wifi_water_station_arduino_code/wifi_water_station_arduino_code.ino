@@ -6,6 +6,8 @@
 #define FIREBASE_HOST "car-project-49490-default-rtdb.firebaseio.com"
 #define FIREBASE_AUTH "ieGIVK3SFXpOGp3OYNsZyNPdZg1YAcjvQTFsWIqB"
 
+bool Status = false;
+
 void setup()
 {
   delay(1000);
@@ -23,7 +25,7 @@ void setup()
 void loop()
 {  
   delay(500);
-  bool Status = Firebase.getBool("NeedRefill");
+  Status = Firebase.getBool("NeedRefill");
   if(Status)
   {
     updateStationToRefill();
@@ -37,7 +39,7 @@ void loop()
 }
 
 void updateStationToRefill(){
-  Serial.print(1);
+  Serial.print(111);
   Serial.println("\n");
 }
 
