@@ -11,29 +11,29 @@
 String outputForArduino = "";
 const char actionDelimiter[2] = " ";
 String Status = "shlukkkkk";
+float f = 4;
 
 #define REFILL_ACK 1
 
-String path;
+String path = "temp";
 
 bool first_iteration = true;
 
 void setup()
 {
-  delay(1000);
   Serial.begin(9600);
   wifiConnect();
-  delay(1000);
+  delay(50);
   fireBaseConnect();
   delay(50);
-  delay(2000);
   Firebase.setString("NeedRefill", "true");
+  delay(100);
   sendActionToArduino(5, 0);
   while(Serial.available() <= 0)
   {
     delay(500);
   }
-  float f = Serial.parseFloat();
+  f = Serial.parseFloat();
 
   // path = "0 111 1 90 2 90 0 222 1 90 2 90 0 333 1 90 2 90 0 444 1 90 2 90 0 555 1 90 2 90 0 666 1 90 2 90 0 777 1 90 2 90 0 888 1 90 2 90 0 999 1 90 2 90";
 }
@@ -63,17 +63,17 @@ void loop()
       {
         delay(500);
       }
-      float f = Serial.parseFloat();
+      f = Serial.parseFloat();
       if(f == REFILL_ACK)
       {
 //        gotoWaterStation();
-        Firebase.setString("NeedRefill", "true");
-        sendActionToArduino(5, 0);
-        while(Serial.available() <= 0)
-        {
-          delay(500);
-        }
-        float f = Serial.parseFloat();
+//        Firebase.setString("NeedRefill", "true");
+//        sendActionToArduino(5, 0);
+//        while(Serial.available() <= 0)
+//        {
+//          delay(500);
+//        }
+//        f = Serial.parseFloat();
 //        goBackToPlace();
       }
       action = strtok(NULL, actionDelimiter);
@@ -110,11 +110,11 @@ void goBackToPlace()
 void sendActionToArduino(float faction, float famount){
   Serial.print(faction);
   delay(10);
-  Serial.print("n");
+  Serial.print(" ");
   delay(10);
   Serial.print(famount);
   delay(10);
-  Serial.print("n");
+//  Serial.print("\n");
   delay(10);
 }
 
@@ -130,20 +130,21 @@ void wifiConnect()
 void fireBaseConnect()
 {
   Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
-  delay(1000);
+  delay(100);
   Firebase.setString("Status", "idle");
+  delay(100);
   Firebase.setString("WifiAck", "Setup finished");
-
-  Status = Firebase.getString("Status");
+  
   while(Status != READY_STATUS_STRING)
   {
-    delay(500);
+    delay(2000);
     Status = Firebase.getString("Status");
     delay(50);
   }
   
   Firebase.setString("Status", "idle");
-  delay(50);
+  delay(100);
   path = Firebase.getString("Path");
+  delay(100);
   Firebase.setString("WifiAck", path);
 }
