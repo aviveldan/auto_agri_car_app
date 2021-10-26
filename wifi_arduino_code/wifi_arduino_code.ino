@@ -29,6 +29,11 @@ void setup()
   delay(2000);
   Firebase.setString("NeedRefill", "true");
   sendActionToArduino(5, 0);
+  while(Serial.available() <= 0)
+  {
+    delay(500);
+  }
+  float f = Serial.parseFloat();
 
   // path = "0 111 1 90 2 90 0 222 1 90 2 90 0 333 1 90 2 90 0 444 1 90 2 90 0 555 1 90 2 90 0 666 1 90 2 90 0 777 1 90 2 90 0 888 1 90 2 90 0 999 1 90 2 90";
 }
@@ -127,7 +132,7 @@ void fireBaseConnect()
   Status = Firebase.getString("Status");
   while(Status != READY_STATUS_STRING)
   {
-    delay(2000);
+    delay(500);
     Status = Firebase.getString("Status");
     delay(50);
   }

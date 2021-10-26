@@ -116,14 +116,13 @@ void loop()
         break;
       case REFILL:
         amount_of_water = AMOUNT_OF_REFILL;
-        delay(50000);
+        delay(500);
         break;
     }
     if(amount_of_water <= 0)
     { 
-      delay(5000);
       sendNeedRefill();
-      delay(3000);
+      delay(1000);
     }
     else
     {
