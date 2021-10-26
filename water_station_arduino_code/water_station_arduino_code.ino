@@ -1,7 +1,7 @@
 
 // Watering stuff
 #define PUMP_PIN A0
-#define WATER_DELAY_TIME 45000
+#define WATER_DELAY_TIME 450
 
 void setup() {
   delay(50);

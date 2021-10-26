@@ -27,7 +27,7 @@ void setup()
   fireBaseConnect();
   delay(50);
   delay(2000);
-  Firebase.setBool("NeedRefill", true);
+  Firebase.setString("NeedRefill", "true");
   sendActionToArduino(5, 0);
 
   // path = "0 111 1 90 2 90 0 222 1 90 2 90 0 333 1 90 2 90 0 444 1 90 2 90 0 555 1 90 2 90 0 666 1 90 2 90 0 777 1 90 2 90 0 888 1 90 2 90 0 999 1 90 2 90";
@@ -62,7 +62,7 @@ void loop()
       if(f == REFILL_ACK)
       {
 //        gotoWaterStation();
-        Firebase.setBool("NeedRefill", true);
+        Firebase.setString("NeedRefill", "true");
         sendActionToArduino(5, 0);
 //        goBackToPlace();
       }
@@ -120,10 +120,6 @@ void wifiConnect()
 void fireBaseConnect()
 {
   Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
-  if (Firebase.failed()) {
-     Serial.println(Firebase.error());  
-     return;
- }
   delay(1000);
   Firebase.setString("Status", "idle");
   Firebase.setString("WifiAck", "Setup finished");
