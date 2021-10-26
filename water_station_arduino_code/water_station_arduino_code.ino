@@ -1,6 +1,3 @@
-#include <SoftwareSerial.h>
-
-SoftwareSerial ArduinoUno(0,1);
 
 // Watering stuff
 #define PUMP_PIN A0
@@ -8,8 +5,7 @@ SoftwareSerial ArduinoUno(0,1);
 
 void setup() {
   delay(50);
-  Serial.begin(115200);
-  ArduinoUno.begin(9600);
+  Serial.begin(9600);
   digitalWrite(PUMP_PIN, HIGH); // disablePump();
   pinMode(PUMP_PIN, OUTPUT);
 
@@ -18,9 +14,9 @@ void setup() {
 
 void loop() 
 {
-  if(ArduinoUno.available()>0)
+  if(Serial.available()>0)
   {
-    float f = ArduinoUno.parseFloat();
+    float f = Serial.parseFloat();
     delay(50);
     if(f == 1)
     {
@@ -29,8 +25,10 @@ void loop()
       disablePump();
       delay(5000);
     }
+    Serial.print(1);
+    Serial.println("\n");
   }
-  delay(2000);
+  delay(500);
 }
 
 

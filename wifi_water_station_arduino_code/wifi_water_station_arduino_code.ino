@@ -1,5 +1,4 @@
 #include <ESP8266WiFi.h>
-#include <SoftwareSerial.h>
 #include <FirebaseArduino.h>
 
 #define WIFI_SSID "AmitZr"
@@ -17,7 +16,7 @@ void setup()
   if (Firebase.failed()) {
      Serial.println(Firebase.error());  
      return;
- }
+  }
   delay(1000);
 }
 
@@ -29,6 +28,11 @@ void loop()
   {
     updateStationToRefill();
     Firebase.setBool("NeedRefill", false);
+    while(Serial.available() <= 0)
+    {
+      delay(500);
+    }
+    Serial.parseFloat(); // Waits for ack
   }
 }
 
@@ -39,19 +43,11 @@ void updateStationToRefill(){
 
 void wifiConnect()
 {
-  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);             // Connect to the network
-  //Serial.print("Connecting to ");
-  //Serial.print(WIFI_SSID); Serial.println(" ...");
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD); // Connect to the network
 
-  int teller = 0;
   while (WiFi.status() != WL_CONNECTED)
-  {                                       // Wait for the Wi-Fi to connect
+  {  
+    // Wait for the Wi-Fi to connect
     delay(1000);
-   // Serial.print(++teller); Serial.print(' ');
   }
-
- // Serial.println('\n');
- // Serial.println("Connection established!");  
- // Serial.print("IP address:\t");
- // Serial.println(WiFi.localIP());         // Send the IP address of the ESP8266 to the computer
 }

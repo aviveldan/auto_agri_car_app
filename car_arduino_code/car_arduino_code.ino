@@ -1,7 +1,7 @@
 // A list of libraries that need to be installed:
 // NewPing, AccelStepper
 
-#include <NewPing.h>
+//#include <NewPing.h>
 #include <Servo.h>
 
 // Global Variables and macros
@@ -22,13 +22,13 @@
 #define TURNING_SPEED 3000
 
 // Ultrasonic
-#define ULTRASONIC_TRIG_PIN A0 // Reset/Abort
-#define ULTRASONIC_ECHO_PIN A1 // Feed Hold
-#define MAX_DISTANCE 200
+//#define ULTRASONIC_TRIG_PIN A0 // Reset/Abort
+//#define ULTRASONIC_ECHO_PIN A1 // Feed Hold
+//#define MAX_DISTANCE 200
 
 // Watering stuff
 #define PUMP_PIN A2 // Cycle Start/Resume - YELLOW
-#define SERVO_PIN A3 // Coolant Enable - ORANGE
+#define SERVO_PIN A0 // Coolant Enable - ORANGE
 #define MOUISTURE_PIN A4 // SDA - BLUE
 
 #define SERVO_MAX_DEGREE 70
@@ -47,7 +47,7 @@
 #define WATER_A_PLANT 4
 #define REFILL 5
 
-NewPing sonar(ULTRASONIC_TRIG_PIN, ULTRASONIC_ECHO_PIN, MAX_DISTANCE);
+//NewPing sonar(ULTRASONIC_TRIG_PIN, ULTRASONIC_ECHO_PIN, MAX_DISTANCE);
 Servo servo;
 
 // Constants
@@ -55,7 +55,7 @@ Servo servo;
 int distance = 100;
 float action = -1;
 float amount = -1;
-double amount_of_water = 10;
+double amount_of_water = 00;
 
 void setup() {
   delay(50);
@@ -76,10 +76,6 @@ void setup() {
   pinMode(PUMP_PIN, OUTPUT);
   servo.attach(SERVO_PIN);
   servo.write(0);
-
-//  delay(5000);
-//  sendNeedRefill();
-//  delay(3000);
 }
 
 void loop()
@@ -120,7 +116,7 @@ void loop()
         break;
       case REFILL:
         amount_of_water = AMOUNT_OF_REFILL;
-        delay(45000);
+        delay(50000);
         break;
     }
     if(amount_of_water <= 0)
@@ -192,20 +188,24 @@ void loop()
 //  turnLeft(90);
 //  delay(50);
 
+//  delay(2000);
+//  moveForward(25);
+//  waterAPlant();
+//  moveForward(25);
 //  delay(10000000);
 }
 
 // Ultrasonic Functions
 
-int readDistance() { 
-  delay(70);
-  int cm = sonar.ping_cm();
-  if(cm==0)
-  {
-    cm = 250;
-  }
-  return cm;
-}
+//int readDistance() { 
+//  delay(70);
+//  int cm = sonar.ping_cm();
+//  if(cm==0)
+//  {
+//    cm = 250;
+//  }
+//  return cm;
+//}
 
 // Motors Functions
 
@@ -346,7 +346,8 @@ int moistureReadInPercent()
 //    delay(1);
 //  }
 //  moisture_value = moisture_value/100.0;
-  return moistureToPercent(analogRead(MOUISTURE_PIN));
+  int res = moistureToPercent(analogRead(MOUISTURE_PIN));
+  return res;
 }
 
 void poureWater(int delayTime){
