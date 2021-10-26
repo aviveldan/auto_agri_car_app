@@ -69,6 +69,11 @@ void loop()
 //        gotoWaterStation();
         Firebase.setString("NeedRefill", "true");
         sendActionToArduino(5, 0);
+        while(Serial.available() <= 0)
+        {
+          delay(500);
+        }
+        float f = Serial.parseFloat();
 //        goBackToPlace();
       }
       action = strtok(NULL, actionDelimiter);
@@ -105,11 +110,11 @@ void goBackToPlace()
 void sendActionToArduino(float faction, float famount){
   Serial.print(faction);
   delay(10);
-  Serial.println("\n");
+  Serial.print("n");
   delay(10);
   Serial.print(famount);
   delay(10);
-  Serial.println("\n");
+  Serial.print("n");
   delay(10);
 }
 

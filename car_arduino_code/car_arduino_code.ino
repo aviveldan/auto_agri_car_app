@@ -128,7 +128,7 @@ void loop()
     {
       Serial.print(0);
       delay(10);
-      Serial.println("\n");
+      Serial.print("n");
     }
   }
   delay(50);
@@ -359,7 +359,7 @@ void sendNeedRefill()
 {
   Serial.print(1);
   delay(10);
-  Serial.println("\n");
+  Serial.print("n");
 }
 
 // Main Functions
