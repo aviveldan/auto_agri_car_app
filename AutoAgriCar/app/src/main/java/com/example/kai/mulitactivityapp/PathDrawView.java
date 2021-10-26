@@ -514,8 +514,6 @@ public class PathDrawView extends View {
             System.err.println(e.getMessage());
         }
         for(int i=0;i<(pointList.size()-1);i++){
-
-
             Point firstPoint = pointList.get(i);
             Point nextPoint = pointList.get(i+1);
             Point lastPoint;
@@ -535,30 +533,36 @@ public class PathDrawView extends View {
             double ratio = scale/screenSize;
             vectorLengthA = ratio*vectorLengthA;
 
-            Pair<Point,Integer> checkStopRight = new Pair(firstPoint,Commands.TURN_RIGHT.ordinal());
-            Pair<Point,Integer> checkStopLeft = new Pair(firstPoint,Commands.TURN_LEFT.ordinal());
-            Pair<Point,Integer> checkStopStraight = new Pair(firstPoint,Commands.WATER_PLANT.ordinal());
-            boolean stopLeft = stopPoints.contains(checkStopLeft);
-            boolean stopRight = stopPoints.contains(checkStopRight);
-            boolean stopStraight = stopPoints.contains(checkStopStraight);
-            if(stopStraight){
-                stringList.add(Commands.WATER_PLANT.ordinal() + " 999 ");
-            }
-            if(stopRight || stopLeft){
-                String firstRotate = Integer.toString(stopRight?Commands.TURN_RIGHT.ordinal():Commands.TURN_LEFT.ordinal());
-                String secondRotate = Integer.toString(stopRight?Commands.TURN_LEFT.ordinal():Commands.TURN_RIGHT.ordinal());
-                double rotation = 90;
-                String tmpStr = firstRotate+" "+rotation+" ";
-                tmpStr+=" "+ Commands.WATER_PLANT.ordinal() + " 999 ";
-                tmpStr += secondRotate+" "+rotation+" ";
-                stringList.add(tmpStr);
-            }
+
 
             String command = Integer.toString(Commands.FORWARD.ordinal());
             String tmpStr = command+" "+(int)vectorLengthA+" "; // goForward
 
             stringList.add(tmpStr);
 
+
+
+            Pair<Point,Integer> checkStopStraight = new Pair(nextPoint,Commands.WATER_PLANT.ordinal());
+
+            boolean stopStraight = stopPoints.contains(checkStopStraight);
+            if(stopStraight){
+                stringList.add(Commands.WATER_PLANT.ordinal() + " 999 ");
+            }
+
+
+            Pair<Point,Integer> checkStopRight = new Pair(nextPoint,Commands.TURN_RIGHT.ordinal());
+            Pair<Point,Integer> checkStopLeft = new Pair(nextPoint,Commands.TURN_LEFT.ordinal());
+            boolean stopLeft = stopPoints.contains(checkStopLeft);
+            boolean stopRight = stopPoints.contains(checkStopRight);
+            if(stopRight || stopLeft){
+                String firstRotate = Integer.toString(stopRight?Commands.TURN_RIGHT.ordinal():Commands.TURN_LEFT.ordinal());
+                String secondRotate = Integer.toString(stopRight?Commands.TURN_LEFT.ordinal():Commands.TURN_RIGHT.ordinal());
+                double rotation = 90;
+                String tempStr = firstRotate+" "+rotation+" ";
+                tempStr+=" "+ Commands.WATER_PLANT.ordinal() + " 999 ";
+                tempStr += secondRotate+" "+rotation+" ";
+                stringList.add(tempStr);
+            }
             if(i<pointList.size()-2){
                 firstPoint = pointList.get(i+1);
                 nextPoint = pointList.get(i+2);
